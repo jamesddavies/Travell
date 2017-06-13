@@ -180,7 +180,7 @@ export default class Explore extends Component {
                   size="large"
                   style={{ marginTop: 120 }}
                 />
-              <Text style={{color: 'white', fontSize: 20}}>
+              <Text style={{color: 'white', fontSize: 20, textAlign: 'center'}}>
                 Getting location...
               </Text>
               </View>
