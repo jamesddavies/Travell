@@ -56,7 +56,12 @@ export default class Explore extends Component {
           });
         }
       },
-      error => { if (this.state.isMounted){ this.setState({ error: error.message }) } },
+      error => { 
+        if (this.state.isMounted){ 
+          this.setState({ error: error.message });
+          alert(error.message);
+        }
+      },
       { enableHighAccuracy: false, timeout: 20000, maximumAge: 1000 }
     );
   }
@@ -168,11 +173,17 @@ export default class Explore extends Component {
           <View style={styles.container}>
 
             {!this.state.lon
-              ? <ActivityIndicator
+              ? 
+              <View>
+              <ActivityIndicator
                   color="#fdfdfd"
                   size="large"
                   style={{ marginTop: 120 }}
                 />
+              <Text style={{color: 'white', fontSize: 20}}>
+                Getting location...
+              </Text>
+              </View>
               : <View style={{ alignItems: "center" }}>
                   <View
                     style={{
