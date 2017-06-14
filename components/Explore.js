@@ -16,11 +16,12 @@ var PickerItem = Picker.Item;
 import { APIKEY, PLACES } from "../config.js";
 import DistanceSelect from "./DistanceSelect";
 import PlaceCard from "./PlaceCard";
+import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 
 export default class Explore extends Component {
-	static navigationOptions = {
-    	tabBarLabel: 'Explore'
-    };
+  static navigationOptions = {
+    tabBarLabel: "Explore"
+  };
 
   constructor(props) {
     super(props);
@@ -45,29 +46,42 @@ export default class Explore extends Component {
   }
 
   componentWillMount() {
-    this.setState({isMounted: true});
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        if (this.state.isMounted){
-          this.setState({
-           lat: position.coords.latitude,
-           lon: position.coords.longitude,
-           error: null
-          });
-        }
-      },
-      error => { 
-        if (this.state.isMounted){ 
-          this.setState({ error: error.message });
-          alert(error.message);
-        }
-      },
-      { enableHighAccuracy: false, timeout: 20000, maximumAge: 1000 }
-    );
+    this.setState({ isMounted: true });
+    LocationServicesDialogBox.checkLocationServicesIsEnabled({
+      message:
+        "<h2>Use Location ?</h2>This app wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/><a href='#'>Learn more</a>",
+      ok: "YES",
+      cancel: "NO"
+    })
+      .then(
+        function(success) {
+          navigator.geolocation.getCurrentPosition(
+            position => {
+              if (this.state.isMounted) {
+                this.setState({
+                  lat: position.coords.latitude,
+                  lon: position.coords.longitude,
+                  error: null
+                });
+              }
+            },
+            error => {
+              if (this.state.isMounted) {
+                this.setState({ error: err.message });
+                alert(err.message);
+              }
+            },
+            { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+          );
+        }.bind(this)
+      )
+      .catch(error => {
+        alert("Travell's Explore feature will not work without Location Services enabled.");
+      });
   }
 
-  componentWillUnmount(){
-    this.setState({isMounted: false});
+  componentWillUnmount() {
+    this.setState({ isMounted: false });
   }
 
   onPickerSelect(index) {
@@ -104,45 +118,47 @@ export default class Explore extends Component {
         let rand = Math.floor(Math.random() * data.results.length);
         let place = data.results[rand];
 
-      if (place == null){
-        this.setState({ error: "Sorry, no results - try looking for something else!"})
-      } else {
-        if (place.icon == null) {
-          this.setState({ icon: null });
-        } else {
-          this.setState({ icon: place.icon });
-        }
-        if (place.name == null) {
-          this.setState({ placeName: null });
-        } else {
-          this.setState({ placeName: place.name });
-        }
-        if (place.opening_hours == null) {
-          this.setState({ openNow: null });
-        } else {
-          this.setState({ openNow: place.opening_hours.open_now });
-        }
-        if (place.rating == null) {
-          this.setState({ rating: null });
-        } else {
-          this.setState({ rating: place.rating });
-        }
-        if (place.vicinity == null) {
-          this.setState({ vicinity: null });
-        } else {
-          this.setState({ vicinity: place.vicinity });
-        }
-        if (place.geometry.location.lat == null) {
-          this.setState({ placeLocation: null });
-        } else {
+        if (place == null) {
           this.setState({
-            placeLocation:
-              place.geometry.location.lat + "," + place.geometry.location.lng
+            error: "Sorry, no results - try looking for something else!"
           });
+        } else {
+          if (place.icon == null) {
+            this.setState({ icon: null });
+          } else {
+            this.setState({ icon: place.icon });
+          }
+          if (place.name == null) {
+            this.setState({ placeName: null });
+          } else {
+            this.setState({ placeName: place.name });
+          }
+          if (place.opening_hours == null) {
+            this.setState({ openNow: null });
+          } else {
+            this.setState({ openNow: place.opening_hours.open_now });
+          }
+          if (place.rating == null) {
+            this.setState({ rating: null });
+          } else {
+            this.setState({ rating: place.rating });
+          }
+          if (place.vicinity == null) {
+            this.setState({ vicinity: null });
+          } else {
+            this.setState({ vicinity: place.vicinity });
+          }
+          if (place.geometry.location.lat == null) {
+            this.setState({ placeLocation: null });
+          } else {
+            this.setState({
+              placeLocation:
+                place.geometry.location.lat + "," + place.geometry.location.lng
+            });
+          }
         }
-      }
       });
-    
+
     this.setState({ searching: false });
   }
 
@@ -173,17 +189,23 @@ export default class Explore extends Component {
           <View style={styles.container}>
 
             {!this.state.lon
-              ? 
-              <View>
-              <ActivityIndicator
-                  color="#fdfdfd"
-                  size="large"
-                  style={{ marginTop: 120 }}
-                />
-              <Text style={{color: 'white', fontSize: 20, textAlign: 'center'}}>
-                Getting location...
-              </Text>
-              </View>
+              ? <View>
+                  <ActivityIndicator
+                    color="#fdfdfd"
+                    size="large"
+                    style={{ marginTop: 120 }}
+                  />
+                  <Text
+                    style={{
+                      color: "white",
+                      fontSize: 20,
+                      textAlign: "center",
+                      marginTop: 30
+                    }}
+                  >
+                    Getting location...
+                  </Text>
+                </View>
               : <View style={{ alignItems: "center" }}>
                   <View
                     style={{
