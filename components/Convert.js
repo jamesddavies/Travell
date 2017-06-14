@@ -5,11 +5,19 @@ import LinearGradient from "react-native-linear-gradient";
 import Picker from "react-native-wheel-picker";
 var PickerItem = Picker.Item;
 import Conversion from "./Conversion";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 export default class Translate extends Component {
 
   static navigationOptions = {
-      tabBarLabel: 'Convert'
+      tabBarLabel: 'Convert',
+    tabBarIcon:  () => (
+          <Icon
+            name="monetization-on"
+            size={24}
+            style={{ color: "white" }}
+          />
+          )
     };
 
   constructor(props) {

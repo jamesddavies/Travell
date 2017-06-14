@@ -17,10 +17,18 @@ import { APIKEY, PLACES } from "../config.js";
 import DistanceSelect from "./DistanceSelect";
 import PlaceCard from "./PlaceCard";
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 export default class Explore extends Component {
   static navigationOptions = {
-    tabBarLabel: "Explore"
+    tabBarLabel: "Explore",
+    tabBarIcon:  () => (
+          <Icon
+            name="explore"
+            size={24}
+            style={{ color: "white" }}
+          />
+          )
   };
 
   constructor(props) {

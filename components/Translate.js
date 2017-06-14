@@ -13,11 +13,19 @@ var PickerItem = Picker.Item;
 import Background from "./Background";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { SUBKEY, LANGUAGES } from "../config.js";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 export default class Translate extends Component {
 
   static navigationOptions = {
-      tabBarLabel: 'Translate'
+      tabBarLabel: 'Translate',
+    tabBarIcon:  () => (
+          <Icon
+            name="translate"
+            size={24}
+            style={{ color: "white" }}
+          />
+          )
     };
 
   constructor(props) {
